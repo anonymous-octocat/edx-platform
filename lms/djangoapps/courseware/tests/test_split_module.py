@@ -214,6 +214,76 @@ class TestSplitTestVertVert(SplitTestBase):
         html1 = self._html(cond1vert, 1)
 
 
+class TestVertSplitTestVert(SplitTestBase):
+    """
+    Tests related to xmodule/split_test_module
+    """
+    __test__ = True
+
+    COURSE_NUMBER = 'vert-split-vert'
+
+    ICON_CLASSES = [
+        'seq_problem',
+        'seq_video',
+    ]
+    TOOLTIPS = [
+        ['Split test vertical'],
+        ['Split test vertical'],
+    ]
+    HIDDEN_CONTENT = [
+        ['Condition 0 Vertical'],
+        ['Condition 1 Vertical'],
+    ]
+
+    # Data is html encoded, because it's inactive inside the
+    # sequence until javascript is executed
+    VISIBLE_CONTENT = [
+        ['class=&#34;problems-wrapper'],
+        ['Some HTML for group 1']
+    ]
+
+    def setUp(self):
+        # We define problem compenents that we need but don't explicitly call elsewhere.
+        # pylint: disable=unused-variable
+        super(TestVertSplitTestVert, self).setUp()
+        # vert <- split_test
+        # split_test cond 0 = vert <- {video, problem}
+        # split_test cond 1 = vert <- {video, html}
+        vert1 = ItemFactory.create(
+            parent_location = self.sequential.location,
+            category = "vertical",
+            display_name = "Split test vertical",
+        )
+        c0_url = self.course.id.make_usage_key("vertical", "split_test_cond0")
+        c1_url = self.course.id.make_usage_key("vertical", "split_test_cond1")
+
+        split_test = ItemFactory.create(
+            parent_location=vert1.location,
+            category="split_test",
+            display_name="Split test",
+            user_partition_id='0',
+            group_id_to_child={"0": c0_url, "1": c1_url},
+        )
+
+        cond0vert = ItemFactory.create(
+            parent_location=split_test.location,
+            category="vertical",
+            display_name="Condition 0 Vertical",
+            location=c0_url
+        )
+        video0 = self._video(cond0vert, 0)
+        problem0 = self._problem(cond0vert, 0)
+
+        cond1vert = ItemFactory.create(
+            parent_location=split_test.location,
+            category="vertical",
+            display_name="Condition 1 Vertical",
+            location=c1_url
+        )
+        video1 = self._video(cond1vert, 1)
+        html1 = self._html(cond1vert, 1)
+
+
 @attr('shard_1')
 class SplitTestPosition(SharedModuleStoreTestCase):
     """
