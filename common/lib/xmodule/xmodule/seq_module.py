@@ -217,10 +217,11 @@ class SequenceModule(SequenceFields, ProctoringFields, XModule):
             progress = child.get_progress()
             rendered_child = child.render(STUDENT_VIEW, context)
             fragment.add_frag_resources(rendered_child)
+            displayable_items = child.displayable_items()
 
             childinfo = {
                 'content': rendered_child.content,
-                'page_title': child.display_name_with_default if child.display_name_with_default else '',
+                'page_title': displayable_items[0].display_name_with_default if displayable_items else '',
                 'progress_status': Progress.to_js_status_str(progress),
                 'progress_detail': Progress.to_js_detail_str(progress),
                 'type': child.get_icon_class(),

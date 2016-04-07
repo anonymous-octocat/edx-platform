@@ -303,6 +303,12 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
 
         return html
 
+    def displayable_items(self):
+        if self.child is None:
+            return []
+        items = self.child.displayable_items()
+        return items if items else []
+
     def student_view(self, context):
         """
         Renders the contents of the chosen condition for students, and all the
