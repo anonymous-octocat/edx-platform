@@ -250,9 +250,9 @@ class TestVertSplitTestVert(SplitTestBase):
         # split_test cond 0 = vert <- {video, problem}
         # split_test cond 1 = vert <- {video, html}
         vert1 = ItemFactory.create(
-            parent_location = self.sequential.location,
-            category = "vertical",
-            display_name = "Split test vertical",
+            parent_location=self.sequential.location,
+            category="vertical",
+            display_name="Split test vertical",
         )
         c0_url = self.course.id.make_usage_key("vertical", "split_test_cond0")
         c1_url = self.course.id.make_usage_key("vertical", "split_test_cond1")
