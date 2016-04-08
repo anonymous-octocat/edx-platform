@@ -1,6 +1,8 @@
 """Forms for API management."""
 from django import forms
 from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
 from openedx.core.djangoapps.api_admin.models import ApiAccessRequest
@@ -9,23 +11,7 @@ from openedx.core.djangoapps.api_admin.models import ApiAccessRequest
 class ApiAccessRequestForm(forms.ModelForm):
     """Form to request API access."""
 
-    terms_of_service = forms.BooleanField(
-        label=_('{platform_name} API Terms of Service').format(platform_name=settings.PLATFORM_NAME),
-        help_text=_(
-            'The resulting Package will still be considered part of Covered Code. Your Grants.'
-            ' In consideration of, and distributed, a Modification is: (a) any addition to or loss'
-            ' of data, programs or other fee is charged for the physical act of transferring a copy,'
-            ' and you may do so by its licensors. The Licensor grants to You for damages, including '
-            'any direct, indirect, special, incidental and consequential damages, such as lost profits;'
-            ' iii) states that any such claim is resolved (such as deliberate and grossly negligent acts)'
-            ' or agreed to in writing, the Copyright Holder nor by the laws of the Original Code and'
-            ' any other entity based on the same media as an expression of character texts or the whole'
-            ' of the Licensed Product, and (iv) you make to the general goal of allowing unrestricted '
-            're-use and re-distribute applies to "Community Portal Server" and related software products'
-            ' as well as in related documentation and collateral materials stating that you have modified'
-            ' that component; or it may be copied, modified, distributed, and/or redistributed.'
-        ),
-    )
+    terms_of_service = forms.BooleanField()
 
     class Meta(object):
         model = ApiAccessRequest
@@ -42,3 +28,16 @@ class ApiAccessRequestForm(forms.ModelForm):
         widgets = {
             'company_address': forms.Textarea()
         }
+
+    def __init__(self, *args, **kwargs):
+        super(ApiAccessRequestForm, self).__init__(*args, **kwargs)
+        self.fields['terms_of_service'].label = mark_safe(
+            # Translators: link_start and link_end are HTML tags for a
+            # link to the terms of service. platform_name is the name of
+            # this Open edX installation.
+            _('{link_start}{platform_name} API Terms of Service{link_end}').format(
+                platform_name=settings.PLATFORM_NAME,
+                link_start='<a href="{url}">'.format(url=reverse('api-tos')),
+                link_end='</a>',
+            )
+        )
