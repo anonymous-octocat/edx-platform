@@ -1,0 +1,21 @@
+## mako
+Dear ${name},
+
+Your request for access to the ${platform_name} Course Catalog API has been approved. Complete the following steps to create your API credentials:
+
+  1. Sign in to ${api_management_url} using the same account you used to request API access.
+  2. On the ${platform_name} API Client page, select Create New Client.
+  3. In the form, enter the Name and Redirect URL for your application.
+  4. Select Save.
+
+When the page refreshes, your API shared secret appears along with your application name, API client ID, and redirect URL.
+To create a new shared secret, select Regenerate.
+
+Notes:
+
+- ${platform_name} recommends that you bookmark the ${api_management_url} page for easy access.
+- For more information about how to use the API shared secret to authenticate your API request, see the FAQs linked to this page.
+- For questions about using this API, see the FAQs or contact ${support_email_address}.
+
+Thanks!
+The ${platform_name} API team

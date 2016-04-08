@@ -1,16 +1,13 @@
 #pylint: disable=missing-docstring
-from smtplib import SMTPException
 import unittest
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-import mock
 
 from openedx.core.djangoapps.api_admin.models import ApiAccessRequest, ApiAccessConfig
 from openedx.core.djangoapps.api_admin.tests.factories import ApiAccessRequestFactory
 from openedx.core.djangoapps.api_admin.tests.utils import VALID_DATA
-from openedx.core.djangoapps.api_admin.views import log as view_log
 from student.tests.factories import UserFactory
 
 
@@ -58,38 +55,14 @@ class ApiRequestViewTest(TestCase):
     def test_post_valid(self):
         """Verify that a logged-in user can create an API request."""
         self.assertFalse(ApiAccessRequest.objects.all().exists())
-        with mock.patch('openedx.core.djangoapps.api_admin.views.send_mail') as mock_send_mail:
-            response = self.client.post(self.url, VALID_DATA)
-        mock_send_mail.assert_called_once_with(
-            'API access request from ' + VALID_DATA['company_name'],
-            mock.ANY,
-            settings.API_ACCESS_FROM_EMAIL,
-            [settings.API_ACCESS_MANAGER_EMAIL],
-            fail_silently=False
-        )
+        response = self.client.post(self.url, VALID_DATA)
         self._assert_post_success(response)
-
-    def test_failed_email(self):
-        """
-        Verify that an access request is still created if sending email
-        fails for some reason, and that the necessary information is
-        logged.
-        """
-        mail_function = 'openedx.core.djangoapps.api_admin.views.send_mail'
-        with mock.patch(mail_function, side_effect=SMTPException):
-            with mock.patch.object(view_log, 'exception') as mock_view_log_exception:
-                response = self.client.post(self.url, VALID_DATA)
-        api_request = self._assert_post_success(response)
-        mock_view_log_exception.assert_called_once_with(
-            'Error sending API request email for request [%s].', api_request.id  # pylint: disable=no-member
-        )
 
     def test_post_anonymous(self):
         """Verify that users must be logged in to create an access request."""
         self.client.logout()
-        with mock.patch('openedx.core.djangoapps.api_admin.views.send_mail') as mock_send_mail:
-            response = self.client.post(self.url, VALID_DATA)
-        mock_send_mail.assert_not_called()
+        response = self.client.post(self.url, VALID_DATA)
+
         self.assertEqual(response.status_code, 302)
         self.assertFalse(ApiAccessRequest.objects.all().exists())
 

@@ -1,0 +1,7 @@
+## mako
+Dear ${name},
+
+Your request for access to the edX Course Catalog API has been denied. If you think this is an error, or for other questions about using this API, contact ${support_email_address}.
+
+Thanks!
+The ${platform_name} API Team
