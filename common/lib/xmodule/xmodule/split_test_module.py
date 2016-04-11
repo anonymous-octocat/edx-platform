@@ -303,12 +303,6 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
 
         return html
 
-    def displayable_items(self):
-        if self.child is None:
-            return []
-        items = self.child.displayable_items()
-        return items if items else []
-
     def student_view(self, context):
         """
         Renders the contents of the chosen condition for students, and all the
@@ -361,6 +355,12 @@ class SplitTestModule(SplitTestFields, XModule, StudioEditableModule):
                 if child_location == vertical.location:
                     return (group.name, group.id)
         return (None, None)
+
+    @property
+    def tooltip_content(self):
+        if self.child is None:
+            return ''
+        return self.child.tooltip_content if self.child.tooltip_content else ''
 
     def validate(self):
         """
