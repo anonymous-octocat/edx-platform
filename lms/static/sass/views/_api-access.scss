@@ -49,6 +49,10 @@
       @extend %t-copy-base;
       display: block;
       font-style: normal;
+
+      &.tos-checkbox-label {
+        display: inline-block;
+      }
     }
 
     input, textarea {
@@ -56,6 +60,12 @@
       font-family: 'Open Sans';
       font-style: normal;
       width: 300px;
+
+      &[type=checkbox] {
+        display: inline-block;
+        width: initial;
+        margin-right: 0.5*$baseline;
+      }
     }
 
     .errorlist {

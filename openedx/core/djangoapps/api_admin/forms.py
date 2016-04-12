@@ -1,16 +1,14 @@
 """Forms for API management."""
 from django import forms
-from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
 from openedx.core.djangoapps.api_admin.models import ApiAccessRequest
+from openedx.core.djangoapps.api_admin.widgets import TermsOfServiceCheckboxInput
 
 
 class ApiAccessRequestForm(forms.ModelForm):
     """Form to request API access."""
-    terms_of_service = forms.BooleanField()
+    terms_of_service = forms.BooleanField(widget=TermsOfServiceCheckboxInput(), label='')
 
     class Meta(object):
         model = ApiAccessRequest
@@ -34,14 +32,3 @@ class ApiAccessRequestForm(forms.ModelForm):
         # Get rid of the colons at the end of the field labels.
         kwargs.setdefault('label_suffix', '')
         super(ApiAccessRequestForm, self).__init__(*args, **kwargs)
-
-        self.fields['terms_of_service'].label = mark_safe(
-            # Translators: link_start and link_end are HTML tags for a
-            # link to the terms of service. platform_name is the name of
-            # this Open edX installation.
-            _('{link_start}{platform_name} API Terms of Service{link_end}').format(
-                platform_name=settings.PLATFORM_NAME,
-                link_start='<a href="{url}">'.format(url=reverse('api-tos')),
-                link_end='</a>',
-            )
-        )
