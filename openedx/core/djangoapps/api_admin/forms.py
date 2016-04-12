@@ -10,13 +10,14 @@ from openedx.core.djangoapps.api_admin.models import ApiAccessRequest
 
 class ApiAccessRequestForm(forms.ModelForm):
     """Form to request API access."""
-
     terms_of_service = forms.BooleanField()
 
     class Meta(object):
         model = ApiAccessRequest
         fields = ('company_name', 'website', 'company_address', 'reason', 'terms_of_service')
         labels = {
+            'company_name': _('Company Name'),
+            'company_address': _('Company Address'),
             'reason': _('Describe what your application does.'),
         }
         help_texts = {
@@ -30,7 +31,10 @@ class ApiAccessRequestForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        # Get rid of the colons at the end of the field labels.
+        kwargs.setdefault('label_suffix', '')
         super(ApiAccessRequestForm, self).__init__(*args, **kwargs)
+
         self.fields['terms_of_service'].label = mark_safe(
             # Translators: link_start and link_end are HTML tags for a
             # link to the terms of service. platform_name is the name of
